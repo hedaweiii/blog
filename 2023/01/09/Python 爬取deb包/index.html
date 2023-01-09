@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google-site-verification" content="TZE0rZyIqLl10trYu3BWBWa1Vmz6HFwhb2OcNEK4u-s" />
+     <link rel="shortcut icon" href= /img/favicon.ico >
+    <title>
+        heawei web
+    </title>
+    <meta name="description" content= 嘿！ >
+    <meta name="keywords" content= Blog,Hexo,Them,运维,python >
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-home
+ replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            Python实现爬取dpkg.org的deb包
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h1 id="Python实现爬取dpkg-org的deb包"><a href="#Python实现爬取dpkg-org的deb包" class="headerlink" title="Python实现爬取dpkg.org的deb包"></a>Python实现爬取dpkg.org的deb包</h1><pre><code>  内网ubuntu系统安装软件不能通网安装依赖是很蛋疼的事情，需要手动一个一个去下载非常浪费时间，往往一个依赖可能还有很多子依赖，网站还时不时有机器人监测
+  为了解决这个麻烦，故写了一个基于selenium的自动打包整理deb的脚本
+  ps：机器人监测以目前状况暂时无法解决，只能通过出现机器人监测界面是暂停爬取，直到手动完成认证确认继续爬取 可以通过代理国外ip来减少机器人监测的概率
+</code></pre>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">web = webdriver.Chrome()</span><br><span class="line"></span><br><span class="line">tables = &#123;&#125;</span><br><span class="line"></span><br><span class="line">deep = <span class="number">0</span></span><br><span class="line">d = <span class="number">2</span></span><br><span class="line">name_path = os.getcwd()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">keys</span>):</span><br><span class="line">    web.get(keys)</span><br><span class="line">    web.implicitly_wait(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">ddos_protect</span>():</span><br><span class="line">    t = <span class="string">&quot;xx&quot;</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        t = web.find_element(By.XPATH, <span class="string">&#x27;//*[@id=&quot;captcha&quot;]/tbody/tr[1]/td[1]/img&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> t != <span class="string">&quot;xx&quot;</span>:</span><br><span class="line">            t = <span class="string">&quot;xxx&quot;</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;ddos&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">if</span> t == <span class="string">&quot;xxx&quot;</span>:</span><br><span class="line">        a = <span class="built_in">input</span>(<span class="string">&quot;图形验证y确认:：&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">download_all</span>(<span class="params">web_site, name,d_f=<span class="number">1</span></span>):</span><br><span class="line">    <span class="keyword">global</span> d</span><br><span class="line">    <span class="keyword">global</span> deep</span><br><span class="line">    <span class="keyword">if</span> deep == <span class="number">0</span>:</span><br><span class="line">        os.mkdir(name)</span><br><span class="line">    search(web_site)</span><br><span class="line">    ddos_protect()</span><br><span class="line">    deep = deep + <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> deep &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            web.find_element(By.XPATH, <span class="string">&#x27;//*[@id=&quot;distro-196&quot;]/div/table/tbody/tr[2]/td[1]/a&#x27;</span>).click()</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="built_in">print</span>(web_site)</span><br><span class="line">            web.find_element(By.XPATH, <span class="string">&#x27;// *[ @ id = &quot;distro-196&quot;] / div / table / tbody / tr[2] / td[1] / a&#x27;</span>).click()</span><br><span class="line">    ddos_protect()</span><br><span class="line"></span><br><span class="line">    table = []</span><br><span class="line">    num = web.find_element(By.XPATH, <span class="string">&#x27;// *[ @ id = &quot;view_packages_info&quot;] / h2[3] / span&#x27;</span>).text</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        download_url = web.find_element(By.XPATH, <span class="string">&#x27;//*[@id=&quot;view_packages_info&quot;]/table[5]/tbody/tr[1]/td&#x27;</span>).text</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        download_url = web.find_element(By.XPATH, <span class="string">&#x27;//*[@id=&quot;view_packages_info&quot;]/table[7]/tbody/tr[1]/td&#x27;</span>).text</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;http&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> download_url:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            download_url = web.find_element(By.XPATH, <span class="string">&#x27;//*[@id=&quot;view_packages_info&quot;]/table[7]/tbody/tr[1]/td&#x27;</span>).text</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">    num = <span class="built_in">int</span>(num)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, num + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            os.chdir(name)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            os.chdir(path_find(name))</span><br><span class="line">            os.chdir(name)</span><br><span class="line"></span><br><span class="line">        i = <span class="built_in">str</span>(i)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            tr_a = web.find_element(By.XPATH,</span><br><span class="line">                                    <span class="string">&#x27;// *[ @ id = &quot;view_packages_info&quot;] / table[3] / tbody / tr[&#x27;</span> + i + <span class="string">&#x27;] / td[1] / a&#x27;</span>).get_attribute(</span><br><span class="line">                <span class="string">&#x27;href&#x27;</span>)</span><br><span class="line">            tr_t = web.find_element(By.XPATH, <span class="string">&#x27;//*[@id=&quot;view_packages_info&quot;]/table[3]/tbody/tr[&#x27;</span> + i + <span class="string">&#x27;]/td[1]&#x27;</span>).text</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">if</span> deep &lt; d:</span><br><span class="line">            os.mkdir(tr_t)</span><br><span class="line">            table.append(tr_t)</span><br><span class="line">            d_flag = deep</span><br><span class="line">            download_all(tr_a, tr_t,d_flag)</span><br><span class="line">    tables.update(&#123;name: table&#125;)</span><br><span class="line">    tables.update(&#123;name + <span class="string">&quot;_url&quot;</span>: download_url&#125;)</span><br><span class="line">    os.chdir(<span class="string">&quot;..&quot;</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        r = requests.get(download_url)</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(name + <span class="string">&quot;.deb&quot;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> file:</span><br><span class="line">            file.write(r.content)</span><br><span class="line">        file.close()</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;url_error.txt&quot;</span>, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> error:</span><br><span class="line">            error.write(<span class="string">&quot;123&quot;</span>)</span><br><span class="line">        error.close()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;down&quot;</span>)</span><br><span class="line">    web.back()</span><br><span class="line">    web.back()</span><br><span class="line">    deep = d_f</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">path_find</span>(<span class="params">ps</span>):</span><br><span class="line">    t = os.path.abspath(<span class="string">&quot;.&quot;</span>).split(ps)</span><br><span class="line">    <span class="keyword">return</span> t[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    a = <span class="built_in">input</span>(<span class="string">&quot;请输入网站：&quot;</span>)</span><br><span class="line">    d = <span class="built_in">input</span>(<span class="string">&quot;递归层数：&quot;</span>)</span><br><span class="line">    d = <span class="built_in">int</span>(d)</span><br><span class="line">    search(<span class="string">&quot;https://ubuntu.pkgs.org/20.04/ubuntu-main-amd64/dpkg_1.19.7ubuntu3_amd64.deb.html&quot;</span>)</span><br><span class="line">    download_all(<span class="string">&quot;https://ubuntu.pkgs.org/20.04/ubuntu-main-amd64/dpkg_1.19.7ubuntu3_amd64.deb.html&quot;</span>, <span class="string">&quot;first&quot;</span>)</span><br><span class="line">    os.chdir(name_path)</span><br><span class="line">    file_txt = <span class="built_in">open</span>(<span class="string">&#x27;example.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">    <span class="comment"># 2层</span></span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> tables.items():</span><br><span class="line">        file_txt.write(k + <span class="string">&quot;: &quot;</span>)</span><br><span class="line">        file_txt.write(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">        file_txt.write(<span class="string">&quot;      &quot;</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">type</span>(v) == <span class="built_in">str</span>:</span><br><span class="line">            file_txt.write(v)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">for</span> x <span class="keyword">in</span> v:</span><br><span class="line">                file_txt.write(x + <span class="string">&quot;   &quot;</span>)</span><br><span class="line">        file_txt.write(<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    file_txt.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>由于是自用 当时没有考虑注释的问题</p>
+<h3 id="需要准备selenium-环境"><a href="#需要准备selenium-环境" class="headerlink" title="需要准备selenium 环境"></a>需要准备selenium 环境</h3><hr>
+<h3 id="简单理下思路"><a href="#简单理下思路" class="headerlink" title="简单理下思路"></a>简单理下思路</h3><pre><code> 主要是通过递归的方式来实现由浅入深的遍历网页中的下载网址表格，会根据提供的深度值停止递归 核心函数就是download_url() 其中ddos_protect()主要用于来监测是否出现机器人认证（图片认证）拿网址之后先放入临时表 提取出网址 通过requests库的方法下载文件 然后将临时表里的数据放入总表 最后格式输出总表 中间建立文件加 目录操作需要用到os库 main里面的东西还有待优化 
+</code></pre>
+<hr>
+<h3 id="定位控件"><a href="#定位控件" class="headerlink" title="定位控件"></a>定位控件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">web.find_element(By.XPATH,<span class="string">&#x27;// *[ @ id = &quot;view_packages_info&quot;] / table[3] /tbody / tr[&#x27;</span> + i + <span class="string">&#x27;] / td[1] / a&#x27;</span>).get_attribute(<span class="string">&#x27;href&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>find_elment方法来通过XPATH控件</p>
+<h3 id="如果找不到控件会终止运行代码-可以用try判断"><a href="#如果找不到控件会终止运行代码-可以用try判断" class="headerlink" title="如果找不到控件会终止运行代码 可以用try判断"></a>如果找不到控件会终止运行代码 可以用try判断</h3>
+    </div>
+
+    
+        <hr class="fhr">
+        <div id="vcomments"></div>
+    
+</div>
+    <div class="footer" id="footer">
+    <p><h4>Copyright © 2020 | Author: 一个小点 | Theme By <a class="theme-author" target="_blank" rel="noopener" href="https://github.com/Xunzhuo/hexo-theme-coder" style="font-size:14px; color: #969696">Coder</a></h4>
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        <span id="busuanzi_container_site_pv">Page Views: <span id="busuanzi_value_site_pv"></span></span>
+        <span class="post-meta-divider">|</span>
+        <span id="busuanzi_container_site_uv">Unique Visitors: <span id="busuanzi_value_site_uv"></span></span>
+    
+    <label class="el-switch el-switch-blue el-switch-sm" style="vertical-align: sub;">
+        <input type="checkbox" name="switch" id="update_style">
+        <span class="el-switch-style"></span>
+    </label>
+
+    <!--         <script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+    document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+    </script> -->
+</p>
+</div>
+
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="">
+<input type="hidden" id="valine_appKey" value="">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+color: #698fca;
+}
+.v .vlist .vcard .vhead .vsys {
+color: #3a3e4a;
+}
+.v .vlist .vcard .vh .vmeta .vat {
+color: #638fd5;
+}
+.v .vlist .vcard .vhead .vnick {
+color: #6ba1ff;
+}
+.v a {
+color: #8696b1;
+}
+.v .vlist .vcard .vhead .vnick:hover {
+color: #669bfc;
+}
+</style>
+    <script type="text/javascript" color="173,174,173" opacity='1' zIndex="-2" count="99" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
