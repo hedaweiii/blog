@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>centos之无网环境巧用yum完全下载软件相关依赖</title>
+    <url>/2023/01/17/Centos%20%E8%BD%AF%E4%BB%B6%E4%BE%9D%E8%B5%96/</url>
+    <content><![CDATA[<h1 id="巧用有网的Centos机给无网环境的Centos机下载软件依赖"><a href="#巧用有网的Centos机给无网环境的Centos机下载软件依赖" class="headerlink" title="巧用有网的Centos机给无网环境的Centos机下载软件依赖"></a>巧用有网的Centos机给无网环境的Centos机下载软件依赖</h1><p>在无网络环境下假如说系统最小安装的情况下安装软件包，可能会产生没有相关依赖的情况</p>
+<h3 id="如果有网的情况我们大可以用yum软件包管理器-自动解决依赖缺失"><a href="#如果有网的情况我们大可以用yum软件包管理器-自动解决依赖缺失" class="headerlink" title="如果有网的情况我们大可以用yum软件包管理器 自动解决依赖缺失"></a>如果有网的情况我们大可以用yum软件包管理器 自动解决依赖缺失</h3><h2 id="无网络情况下："><a href="#无网络情况下：" class="headerlink" title="无网络情况下："></a>无网络情况下：</h2><p>首先准备一台有网的同系统机器<br><br><br><br>安装yum-utils 工具</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum -y install yum-utils</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">repotrack ansible</span><br></pre></td></tr></table></figure>
+<p>会在当前路径下载软件ansible的全部依赖(包含ansible本身安装包,不包含依赖的子依赖)</p>
+<h3 id="情况2-在当前系统已有依赖基础之上追加的依赖-："><a href="#情况2-在当前系统已有依赖基础之上追加的依赖-：" class="headerlink" title="情况2(在当前系统已有依赖基础之上追加的依赖)："></a>情况2(在当前系统已有依赖基础之上追加的依赖)：</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装yum-utils</span></span><br><span class="line">yum -y install yum-utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载 ansible 依赖包</span></span><br><span class="line">yumdownloader --resolve --destdir=/tmp ansible</span><br></pre></td></tr></table></figure>
+<p>注：–destdir：指定 rpm 包下载目录（不指定时，默认为当前目录）<br>–resolve：下载依赖的 rpm 包。<br><br>仅会将主软件包和基于你现在的操作系统所缺少的依赖关系包一并下载。</p>
+<p>下载完毕打包到无网环境机器就行</p>
+]]></content>
+      <categories>
+        <category>系统运维</category>
+        <category>Centos</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Python实现爬取dpkg.org的deb包</title>
     <url>/2023/01/09/Python%20%E7%88%AC%E5%8F%96deb%E5%8C%85/</url>
     <content><![CDATA[<h1 id="Python实现爬取dpkg-org的deb包"><a href="#Python实现爬取dpkg-org的deb包" class="headerlink" title="Python实现爬取dpkg.org的deb包"></a>Python实现爬取dpkg.org的deb包</h1><pre><code>  内网ubuntu系统安装软件不能通网安装依赖是很蛋疼的事情，需要手动一个一个去下载非常浪费时间，往往一个依赖可能还有很多子依赖，网站还时不时有机器人监测
