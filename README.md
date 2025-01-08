@@ -1,1 +1,1 @@
-[博客](https://hedaweiii.github.io/)
+[博客](https://hedaweiii.github.io/blog)
